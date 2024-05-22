@@ -9,6 +9,18 @@
 <body>
     <div class="signup-container">
         <h2>Sign Up</h2>
+        
+        <!-- Flash messages section -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
         <form action="/signup" method="POST">
             <div class="input-group">
                 <label for="username">Username</label>
@@ -28,5 +40,6 @@
             </div>
         </form>
     </div>
+    <script src="{{ url_for('static', filename='signup_validation.js') }}"></script>
 </body>
 </html>
