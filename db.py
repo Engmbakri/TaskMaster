@@ -1,3 +1,4 @@
+
 import mysql.connector
 from config import DB_CONFIG
 import hashlib
@@ -79,8 +80,11 @@ def signup(username, email, password):
         conn.commit()
         return True
     except mysql.connector.Error as err:
-        print("Error:", err)
-        return False
+        if err.errno == 1062:  # Duplicate entry error
+            raise err
+        else:
+            print("Error:", err)
+            raise err
     finally:
         cursor.close()
         conn.close()
@@ -115,6 +119,35 @@ def get_all_tasks_for_user(username):
     except mysql.connector.Error as err:
         print("Error:", err)
         return []
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_user_by_email(email):
+    conn = get_database_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        sql = "SELECT id, email FROM users WHERE email = %s"
+        cursor.execute(sql, (email,))
+        user = cursor.fetchone()
+        return user
+    except mysql.connector.Error as err:
+        print("Error:", err)
+        return None
+    finally:
+        cursor.close()
+        conn.close()
+
+def update_password(user_id, new_password):
+    conn = get_database_connection()
+    cursor = conn.cursor()
+    try:
+        hashed_password = hashlib.sha256(new_password.encode()).hexdigest()
+        sql = "UPDATE users SET password = %s WHERE id = %s"
+        cursor.execute(sql, (hashed_password, user_id))
+        conn.commit()
+    except mysql.connector.Error as err:
+        print("Error:", err)
     finally:
         cursor.close()
         conn.close()
