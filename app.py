@@ -2,17 +2,21 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mail import Mail, Message
 from db import create_task, get_task, update_task, delete_task_from_db, get_all_tasks_for_user, signup, login, get_user_by_email, update_password
 from itsdangerous import URLSafeTimedSerializer
+import os
+from dotenv import load_dotenv
 import mysql.connector
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'Hmoodecr10engbekoo10'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # Email configurations
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = ''
-app.config['MAIL_PASSWORD'] = 'ufbu vbqk ykvl lpgn'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 mail = Mail(app)
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])
