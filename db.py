@@ -1,4 +1,3 @@
-
 import mysql.connector
 from config import DB_CONFIG
 import hashlib
@@ -6,15 +5,22 @@ import hashlib
 def get_database_connection():
     return mysql.connector.connect(**DB_CONFIG)
 
-def create_task(title, description, due_date, username):
+def create_task(title, description, due_date, username, priority):
     conn = get_database_connection()
     cursor = conn.cursor()
-    sql = "INSERT INTO tasks (title, description, due_date, username) VALUES (%s, %s, %s, %s)"
-    task_data = (title, description, due_date, username)
-    cursor.execute(sql, task_data)
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        # Insert task into the tasks table
+        sql = "INSERT INTO tasks (title, description, due_date, username, priority) VALUES (%s, %s, %s, %s, %s)"
+        task_data = (title, description, due_date, username, priority)
+        cursor.execute(sql, task_data)
+        task_id = cursor.lastrowid
+        conn.commit()
+        return task_id
+    except mysql.connector.Error as err:
+        print("Error:", err)
+    finally:
+        cursor.close()
+        conn.close()
 
 def get_task(task_id):
     conn = get_database_connection()
@@ -26,7 +32,7 @@ def get_task(task_id):
     conn.close()
     return task
 
-def update_task(task_id, title=None, description=None, due_date=None, status=None):
+def update_task(task_id, title=None, description=None, due_date=None, status=None, priority=None):
     conn = get_database_connection()
     cursor = conn.cursor()
     updates = []
@@ -44,6 +50,9 @@ def update_task(task_id, title=None, description=None, due_date=None, status=Non
     if status:
         updates.append("status = %s")
         update_data.append(status)
+    if priority:
+        updates.append("priority = %s")
+        update_data.append(priority)
 
     if updates:
         sql = "UPDATE tasks SET " + ", ".join(updates) + " WHERE id = %s"
@@ -68,7 +77,6 @@ def delete_task_from_db(task_id):
     finally:
         cursor.close()
         conn.close()
-
 
 def signup(username, email, password):
     conn = get_database_connection()
@@ -112,7 +120,14 @@ def get_all_tasks_for_user(username):
     conn = get_database_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        sql = "SELECT * FROM tasks WHERE username = %s"
+        sql = """
+        SELECT tasks.*, GROUP_CONCAT(labels.name) as labels
+        FROM tasks
+        LEFT JOIN task_labels ON tasks.id = task_labels.task_id
+        LEFT JOIN labels ON task_labels.label_id = labels.id
+        WHERE tasks.username = %s
+        GROUP BY tasks.id
+        """
         cursor.execute(sql, (username,))
         tasks = cursor.fetchall()
         return tasks

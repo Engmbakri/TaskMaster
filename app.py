@@ -111,7 +111,7 @@ def login_page():
         password = request.form['password']
         if login(username, password):
             session['username'] = username
-            flash('Login successful!', 'success')
+            flash('Login Successfull!', 'Success')
             return redirect(url_for('index'))
         else:
             flash('Invalid username or password.', 'error')
@@ -134,8 +134,9 @@ def create_new_task():
         title = request.form['title']
         description = request.form['description']
         due_date = request.form['due_date']
+        priority = request.form['priority']
         username = session['username']
-        create_task(title, description, due_date, username)
+        create_task(title, description, due_date, username, priority)
         return redirect(url_for('index'))
     return render_template('new_task.html')
 
@@ -147,7 +148,8 @@ def edit_task(task_id):
         description = request.form['description']
         due_date = request.form['due_date']
         status = request.form['status']
-        update_task(task_id, title=title, description=description, due_date=due_date, status=status)
+        priority = request.form['priority']
+        update_task(task_id, title=title, description=description, due_date=due_date, status=status, priority=priority)
         return redirect(url_for('view_task', task_id=task_id))
     return render_template('edit_task.html', task=task)
 

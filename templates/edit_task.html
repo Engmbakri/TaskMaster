@@ -30,9 +30,17 @@
                     <option value="Completed" {% if task.status == 'Completed' %}selected{% endif %}>Completed</option>
                 </select>
             </div>
+            <div class="input-group">
+                <label for="priority">Priority</label>
+                <select id="priority" name="priority" required>
+                    <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
+                    <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
+                    <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
+                </select>
+            </div>
             <button type="submit" class="btn">Update Task</button>
         </form>
         <a href="{{ url_for('view_task', task_id=task.id) }}" class="btn">Cancel</a>
-    </div>
+    </div> 
 </body>
 </html>

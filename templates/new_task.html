@@ -22,6 +22,14 @@
                 <label for="due_date">Due Date</label>
                 <input type="date" id="due_date" name="due_date" required>
             </div>
+            <div class="input-group">
+                <label for="priority">Priority</label>
+                <select id="priority" name="priority">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
             <button type="submit" class="btn">Create Task</button>
         </form>
         <a href="{{ url_for('index') }}" class="btn">Back to Tasks</a>
