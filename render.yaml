@@ -6,20 +6,22 @@ services:
     startCommand: "gunicorn -c gunicorn_config.py app:app"
     envVars:
       - key: DB_HOST
-        value: your-db-host
+        value: 172.29.187.8
       - key: DB_PORT
         value: 3306
       - key: DB_USER
-        value: your-db-user
+        value: remote_user
       - key: DB_PASSWORD
-        value: your-db-password
+        value: hmoodecr1o
       - key: DB_NAME
-        value: your-db-name
+        value: task_manager
       - key: SECRET_KEY
-        value: your-secret-key
+        value: Hmoodecr10engbekoo10
       - key: MAIL_USERNAME
-        value: your-email
+        value: altyebwebsite@gmail.com
       - key: MAIL_PASSWORD
-        value: your-email-password
+        value: ufbu vbqk ykvl lpgn
       - key: PORT
-        value: 10000
+        value: 10000  # The port your web service should listen on
+      - key: WEB_CONCURRENCY
+        value: 1  # Number of Gunicorn workers
