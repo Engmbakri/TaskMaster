@@ -21,3 +21,5 @@ services:
         value: your-email
       - key: MAIL_PASSWORD
         value: your-email-password
+      - key: PORT
+        value: 10000
